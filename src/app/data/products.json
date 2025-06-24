@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "name": "Black Minta Tee",
+    "description": "Premium cotton oversized t-shirt.",
+    "price": 1299,
+    "image": "../../../public/Rectangle12.png",
+    "category": "tshirt"
+  },
+  {
+    "id": "2",
+    "name": "Gold Chain",
+    "description": "Trendy gold plated chain accessory.",
+    "price": 899,
+    "image": "/images/gold-chain.jpg",
+    "category": "accessory"
+  }
+]

@@ -14,7 +14,7 @@ export default function Hero() {
                 href="/products"
                 className="inline-block bg-white text-black px-6 py-3 rounded font-semibold hover:bg-gray-200 transition"
             >
-                Shop Now
+                Shop No
             </Link>
         </section>
 

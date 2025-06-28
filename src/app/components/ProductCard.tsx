@@ -1,5 +1,5 @@
 type Product = {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   price: number;
@@ -21,3 +21,4 @@ export default function ProductCard({ product }: { product: Product }) {
     </div>
   );
 }
+

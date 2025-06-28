@@ -17,7 +17,13 @@ export default function ProductsPage() {
     useEffect(() => {
         fetch("/api/products")
             .then((res) => res.json())
-            .then((data) => setProducts(data));
+            .then((data) => {
+                console.log(data);
+                setProducts(data.products || []);
+            })
+            .catch((error) => {
+                console.error("Error fetching products:", error);
+            });
     }, []);
 
     return (

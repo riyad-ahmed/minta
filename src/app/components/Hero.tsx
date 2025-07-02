@@ -1,59 +1,103 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+type Product = {
+    _id: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    category: string;
+};
 
 export default function Hero() {
-    return (
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4 md:px-12 lg:px-24 py-16 bg-white">
+    const [featured, setFeatured] = useState<Product[]>([]);
 
-            {/* LEFT COLUMN – Filters & Text */}
-            <div className="space-y-6">
-                {/* Filter */}
-                <div>
-                    <h3 className="text-lg font-semibold mb-2">MEN</h3>
-                    <h3 className="text-lg font-semibold mb-2">WOMEN</h3>
-                    <h3 className="text-lg font-semibold mb-4">KIDS</h3>
+    useEffect(() => {
+        fetch("/api/products")
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.products && data.products.length >= 2) {
+                    setFeatured(data.products.slice(0, 2));
+                }
+            })
+            .catch((error) => console.error("Error loading featured products:", error));
+    }, []);
+
+    return (
+        <section className="bg-white">
+            <div className="container mx-auto px-4 py-6">
+                <div className="space-y-2 w-full md:max-w-[33.3333%] mx-auto md:mx-0 mb-6">
+                    <h3 className="text-sm font-semibold">MEN</h3>
+                    <h3 className="text-sm font-semibold">WOMEN</h3>
+                    <h3 className="text-sm font-semibold">KIDS</h3>
                     <input
                         type="text"
                         placeholder="Search"
-                        className="w-full border border-gray-300 px-4 py-2 rounded focus:outline-none focus:ring-1 focus:ring-black"
+                        className="w-full px-4 py-2 focus:outline-none focus:ring-1 focus:ring-black bg-[#D9D9D9]"
                     />
                 </div>
+            </div>
+            <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6 py-8">
+                {/* LEFT COLUMN – All text & filter */}
+                <div className="flex flex-col justify-between h-full">
+                    {/* Top content */}
+                    <div className="space-y-6">
+                        <div className="pt-4">
+                            <h2 className="text-3xl md:text-4xl font-extrabold">NEW COLLECTION</h2>
+                            <p className="text-gray-600 mt-1 mb-4 text-base">Summer 2026</p>
+                        </div>
+                    </div>
 
-                {/* Text */}
-                <div>
-                    <h2 className="text-3xl md:text-4xl font-extrabold">NEW COLLECTION</h2>
-                    <p className="text-gray-600 mt-1 mb-4 text-base">Summer 2024</p>
-
-                    {/* Button + Arrow */}
-                    <div className="flex items-center gap-4">
+                    {/* Button Section */}
+                    <div className="items-center grid grid-cols-4 gap-4 mb-7 justify-between">
+                        {/* Go To Shop Button */}
                         <Link
                             href="/products"
-                            className="bg-black text-white px-6 py-3 text-sm font-semibold rounded hover:bg-gray-800 transition"
+                            className="flex items-center justify-between gap-8 bg-gray-100 rounded transition hover:bg-gray-200 col-span-3 px-1 py-1"
                         >
-                            Go To Shop
+                            <span className="text-sm font-medium text-gray-800">Go To Shop</span>
+                            <span className="text-lg mr-3">→</span>
                         </Link>
-                        <button className="w-10 h-10 rounded-full border border-black flex items-center justify-center hover:bg-black hover:text-white transition">
-                            →
-                        </button>
+
+                        {/* Navigation Arrows */}
+                        <div className="flex gap-2 col-span-1">
+                            <button className="w-9 h-9 border border-gray-400 text-lg text-gray-800 rounded hover:bg-gray-200">
+                                &lt;
+                            </button>
+                            <button className="w-9 h-9 border border-gray-400 text-lg text-gray-800 rounded hover:bg-gray-200">
+                                &gt;
+                            </button>
+                        </div>
                     </div>
+
                 </div>
-            </div>
 
-            {/* MIDDLE COLUMN – Product Image 1 */}
-            <div>
-                <img
-                    src="/images/hero2.jpg"
-                    alt="Product Image 1"
-                    className="w-full h-[450px] object-cover rounded-lg"
-                />
-            </div>
+                {/* MIDDLE COLUMN – Product 1 */}
+                {featured[0] && (
+                    <div className="text-center">
+                        <img
+                            src={featured[0].image}
+                            alt={featured[0].name}
+                            className="w-full h-[450px] object-cover"
+                        />
+                        <h3 className="text-base font-semibold mt-2">{featured[0].name}</h3>
+                    </div>
+                )}
 
-            {/* RIGHT COLUMN – Product Image 2 */}
-            <div>
-                <img
-                    src="/images/hero3.jpg"
-                    alt="Product Image 2"
-                    className="w-full h-[450px] object-cover rounded-lg"
-                />
+                {/* RIGHT COLUMN – Product 2 */}
+                {featured[1] && (
+                    <div className="text-center">
+                        <img
+                            src={featured[1].image}
+                            alt={featured[1].name}
+                            className="w-full h-[450px] object-cover"
+                        />
+                        <h3 className="text-base font-semibold mt-2">{featured[1].name}</h3>
+                    </div>
+                )}
             </div>
         </section>
     );

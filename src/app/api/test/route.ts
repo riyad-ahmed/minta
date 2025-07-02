@@ -1,5 +1,5 @@
 // src/app/api/test/route.ts
-import clientPromise from "@/lib/mongodb";
+import clientPromise from "@/src/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET() {

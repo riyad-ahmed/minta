@@ -12,7 +12,7 @@ type Product = {
     category: string;
 };
 
-export default function Hero() {
+export default function NewCollection() {
     const [featured, setFeatured] = useState<Product[]>([]);
 
     useEffect(() => {
@@ -46,13 +46,13 @@ export default function Hero() {
                     {/* Top content */}
                     <div className="space-y-6">
                         <div className="pt-4">
-                            <h2 className="text-3xl md:text-4xl font-extrabold">NEW COLLECTION</h2>
+                            <h2 className="text-3xl md:text-4xl font-extrabold">NEW <br /> COLLECTION</h2>
                             <p className="text-gray-600 mt-1 mb-4 text-base">Summer 2026</p>
                         </div>
                     </div>
 
                     {/* Button Section */}
-                    <div className="items-center grid grid-cols-4 gap-4 mb-7 justify-between">
+                    <div className="items-center grid grid-cols-4 gap-4 justify-between">
                         {/* Go To Shop Button */}
                         <Link
                             href="/products"
@@ -63,11 +63,11 @@ export default function Hero() {
                         </Link>
 
                         {/* Navigation Arrows */}
-                        <div className="flex gap-2 col-span-1">
-                            <button className="w-9 h-9 border border-gray-400 text-lg text-gray-800 rounded hover:bg-gray-200">
+                        <div className="flex gap-2 col-span-1 justify-end">
+                            <button className="w-9 h-9 border border-[#A3A3A3] text-lg text-gray-800 hover:bg-gray-200">
                                 &lt;
                             </button>
-                            <button className="w-9 h-9 border border-gray-400 text-lg text-gray-800 rounded hover:bg-gray-200">
+                            <button className="w-9 h-9 border border-[#A3A3A3] text-lg text-gray-800 hover:bg-gray-200">
                                 &gt;
                             </button>
                         </div>
@@ -83,7 +83,6 @@ export default function Hero() {
                             alt={featured[0].name}
                             className="w-full h-[450px] object-cover"
                         />
-                        <h3 className="text-base font-semibold mt-2">{featured[0].name}</h3>
                     </div>
                 )}
 
@@ -95,7 +94,6 @@ export default function Hero() {
                             alt={featured[1].name}
                             className="w-full h-[450px] object-cover"
                         />
-                        <h3 className="text-base font-semibold mt-2">{featured[1].name}</h3>
                     </div>
                 )}
             </div>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import ProductCard from "@/src/app/components/ProductCard";
+import ProductCard from "@/src/components/ProductCard";
 
 type Product = {
     _id: string;

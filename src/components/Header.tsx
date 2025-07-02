@@ -1,6 +1,6 @@
 import Link from 'next/link';
 // import Logo from '../../../public/images/horizontal.png';
-import sidebar from '../../../public/togol.png';
+import sidebar from '@/public/togol.png';
 import Image from 'next/image';
 
 export default function Header() {

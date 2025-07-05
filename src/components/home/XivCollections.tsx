@@ -1,13 +1,6 @@
-// src/components/ThisWeek.tsx
 "use client";
 
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import type SwiperCore from 'swiper';
+import { useEffect, useState } from "react";
 
 type Product = {
     _id: string;
@@ -20,7 +13,8 @@ type Product = {
 
 export default function XivCollections() {
     const [products, setProducts] = useState<Product[]>([]);
-    const swiperRef = useRef<SwiperCore | null>(null);
+    const [visibleProducts, setVisibleProducts] = useState(3);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetch("/api/products")
@@ -33,88 +27,75 @@ export default function XivCollections() {
             .catch((error) => console.error("Error loading products:", error));
     }, []);
 
+    const loadMoreProducts = () => {
+        setIsLoading(true);
+        setTimeout(() => {
+            setVisibleProducts(prev => prev + 3); // Load 3 more each time
+            setIsLoading(false);
+        }, 300);
+    };
+
     return (
         <section className="bg-white py-12 px-4">
             <div className="container mx-auto">
-                {/* Header */}
-                <div className="flex justify-between items-center mb-8">
+                {/* Header - Split layout */}
+                <div className="mb-8 flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                    {/* Left side - Title and categories */}
                     <div>
-                        <h2 className="text-3xl md:text-4xl font-extrabold">NEW <br /> THIS WEEK</h2>
-                        <p className="text-gray-600 mt-1 mb-4 text-base">({products.length} products available)</p>
-                    </div>
-                    <Link
-                        href="/products"
-                        className="text-sm font-medium hover:underline"
-                    >
-                        See All →
-                    </Link>
-                </div>
-
-                {/* Swiper Slider */}
-                <div className="relative">
-                    <Swiper
-                        onSwiper={(swiper) => {
-                            swiperRef.current = swiper;
-                        }}
-                        modules={[Navigation]}
-                        spaceBetween={24}
-                        slidesPerView={1}
-                        breakpoints={{
-                            640: {
-                                slidesPerView: 2,
-                            },
-                            1024: {
-                                slidesPerView: 4,
-                            }
-                        }}
-                        className="!pb-16" // Increased padding for navigation
-                    >
-                        {products.map((product: Product) => (
-                            <SwiperSlide key={product._id}>
-                                <div className="group h-full">
-                                    <div className="aspect-square overflow-hidden rounded-lg">
-                                        <img
-                                            src={product.image}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
-                                    </div>
-                                    <div className="mt-4">
-                                        <h3 className="font-medium">{product.name}</h3>
-                                        <p className="text-gray-500 text-sm mt-1 line-clamp-2">
-                                            {product.description}
-                                        </p>
-                                        <p className="font-bold mt-2">${product.price}</p>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-
-                    {/* Custom Navigation Buttons - Now properly connected and centered */}
-                    {products.length > 4 && (
-                        <div className="flex justify-center gap-8 mt-6">
-                            <button
-                                onClick={() => swiperRef.current?.slidePrev()}
-                                className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
-                                aria-label="Previous slide"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                </svg>
-                            </button>
-                            <button
-                                onClick={() => swiperRef.current?.slideNext()}
-                                className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors"
-                                aria-label="Next slide"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
+                        <h2 className="text-3xl md:text-4xl font-extrabold">XIV COLLECTIONS 23-24</h2>
+                        <div className="flex gap-4 mt-4">
+                            <span className="text-sm">(ALL)</span>
+                            <span className="text-sm">Men</span>
+                            <span className="text-sm">Women</span>
+                            <span className="text-sm">KID</span>
                         </div>
-                    )}
+                    </div>
+
+                    {/* Right side - Filters and sort */}
+                    <div className="flex flex-wrap gap-4">
+                        <button className="text-sm flex items-center">
+                            Filters <span className="ml-1">+</span>
+                        </button>
+                        <button className="text-sm flex items-center">
+                            Sort <span className="ml-1">+</span>
+                        </button>
+                        <button className="text-sm">Less to more</button>
+                        <button className="text-sm">More to Less</button>
+                    </div>
                 </div>
+
+                {/* Products Grid - Fixed 3 columns */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {products.slice(0, visibleProducts).map((product) => (
+                        <div key={product._id} className="group">
+                            <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
+                                <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                />
+                            </div>
+                            <div className="mt-4">
+                                <h3 className="font-medium text-gray-500">Option {product.category}</h3>
+                                <p className="text-gray-900 font-medium mt-1">{product.name}</p>
+                                <p className="font-bold mt-2">${product.price}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* More Button - Centered */}
+                {visibleProducts < products.length && (
+                    <div className="mt-12 text-center">
+                        <button
+                            onClick={loadMoreProducts}
+                            disabled={isLoading}
+                            className={`px-6 py-2 border border-black rounded-full text-sm font-medium transition-all ${isLoading ? 'opacity-50' : 'hover:bg-black hover:text-white'}`}
+                        >
+                            {isLoading ? 'Loading...' : 'More'}
+                        </button>
+                    </div>
+                )}
             </div>
         </section>
     );

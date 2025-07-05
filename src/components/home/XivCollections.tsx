@@ -27,10 +27,16 @@ export default function XivCollections() {
             .catch((error) => console.error("Error loading products:", error));
     }, []);
 
-    const loadMoreProducts = () => {
+    const toggleProducts = () => {
         setIsLoading(true);
         setTimeout(() => {
-            setVisibleProducts(prev => prev + 3); // Load 3 more each time
+            if (visibleProducts >= products.length) {
+                // If showing all products, collapse back to initial view
+                setVisibleProducts(3);
+            } else {
+                // If not showing all, load 3 more
+                setVisibleProducts(prev => Math.min(prev + 3, products.length));
+            }
             setIsLoading(false);
         }, 300);
     };
@@ -84,15 +90,16 @@ export default function XivCollections() {
                     ))}
                 </div>
 
-                {/* More Button - Centered */}
-                {visibleProducts < products.length && (
+                {/* Toggle Button - Centered */}
+                {products.length > 3 && (
                     <div className="mt-12 text-center">
                         <button
-                            onClick={loadMoreProducts}
+                            onClick={toggleProducts}
                             disabled={isLoading}
                             className={`px-6 py-2 border border-black rounded-full text-sm font-medium transition-all ${isLoading ? 'opacity-50' : 'hover:bg-black hover:text-white'}`}
                         >
-                            {isLoading ? 'Loading...' : 'More'}
+                            {isLoading ? 'Loading...' :
+                                visibleProducts >= products.length ? 'Show Less' : 'More'}
                         </button>
                     </div>
                 )}

@@ -18,11 +18,20 @@ export default function ProductsPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [activeCategory, setActiveCategory] = useState("ALL");
     const [showFilters, setShowFilters] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const categories = [
         "ALL", "NEW", "BEST SELLERS", "SHIRTS", "T-SHIRTS",
         "POLO SHIRTS", "JCMAS", "SHORTS", "SUP", "COA"
     ];
+
+    // Filter products based on search term and active category
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = activeCategory === "ALL" || product.category === activeCategory;
+        return matchesSearch && matchesCategory;
+    });
 
     useEffect(() => {
         fetch("/api/products")
@@ -87,13 +96,37 @@ export default function ProductsPage() {
                                 </label>
                             </div>
                         </div>
-
-                        {/* Other filters would go here */}
                     </div>
                 </div>
 
                 {/* Main Content */}
                 <div className="md:w-3/4">
+                    {/* Search Bar */}
+                    <div className="mb-6">
+                        <div className="relative max-w-md">
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                className="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-black"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <svg
+                                className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </div>
+                    </div>
                     {/* Category Navigation */}
                     <div className="flex overflow-x-auto gap-4 mb-6 pb-2 scrollbar-hide">
                         {categories.map(category => (
@@ -112,9 +145,15 @@ export default function ProductsPage() {
 
                     {/* Product Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {products.map((product) => (
-                            <ProductCard key={product._id} product={product} />
-                        ))}
+                        {filteredProducts.length > 0 ? (
+                            filteredProducts.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-12">
+                                <p className="text-lg">No products found matching your search</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
